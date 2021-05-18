@@ -1,9 +1,14 @@
 package com.example.springsecurity.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
@@ -36,5 +41,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic(); // i want to use basic authentication
 
         // drawback -> you can't log out because the username and password is sent on every request, and the server will have to check it
+    }
+
+    @Override
+    @Bean
+    // how you retrieve a user from a database
+    protected UserDetailsService userDetailsService() {
+        UserDetails annaSmithUser = User.builder()
+                .username("annasmith")
+                .password("password")
+                .roles("STUDENT") // ROLE_STUDENT
+                .build();
+
+        return new InMemoryUserDetailsManager(annaSmithUser);
     }
 }
